@@ -1,5 +1,6 @@
 package com.hrishikesh.jdbcDemo;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,12 +40,19 @@ public class jdbcDemoTest {
 	public void given_ListOfSalaryDetailsOfEmployess_ShouldReturnNumberOfEmployees() throws SQLException {
 		int result = jdbc.getSalaryFromDb("SELECT idEmployee,Employee_name,Salary_idSalary,BasicPay FROM employee"
 				+ " INNER JOIN salary ON employee.Salary_idSalary = salary.idSalary;");
-		Assert.assertEquals(3, result);
+		Assert.assertEquals(4, result);
 	}
 	
 	@Test
 	public void given_ListOfSalaryDetailsOfEmployess_WhenGivenWrongQuery_ShouldReturnZero() throws SQLException {
 		int result = jdbc.getSalaryFromDb("SELECT * FROM employee");//Wrong Query, throws exception
 		Assert.assertEquals(0, result);
+	}
+	
+	@Test
+	public void when_SalaryUpsated_WithoutUsingPreparedStatement_ShouldReflectSalaryInDatabase() {
+		jdbc.updateSalary();
+		int result = jdbc.getUpdatedSalary("select BasicPay from salary where idSalary = (select Salary_idSalary from employee where Employee_name = 'Terisa');");
+		Assert.assertEquals(3000000, result);
 	}
 }

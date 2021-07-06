@@ -1,3 +1,10 @@
+/**************************************************************
+ * Purpose : Model object of salary column. 
+ * @author Hrishikesh Ugavekar
+ * @Version 1.0
+ * @since 06-07-2021
+ *
+ ************************************************************/
 package model;
 
 public class EmployeeSalaryModel {

@@ -2,7 +2,7 @@
  * Purpose JDBC Demo to perform various operations in database. 
  * @author Hrishikesh Ugavekar
  * @Version 1.0
- * @since 30-06-2021
+ * @since 06-07-2021
  *
  ************************************************************/
 package com.hrishikesh.jdbcDemo;
@@ -42,6 +42,12 @@ public class JdbcDemo {
 		}
 	}
 	
+	/**
+	 * Gets the salary of employees from database
+	 * Stores the salary of employees as a list
+	 * @param query from test method
+	 * @return number of employees
+	 */
 	public int getSalaryFromDb(String query) {
 		connectToDb("jdbc:mysql://localhost:3306/payrolldb?useSSL=false",
 				"root",
@@ -60,7 +66,43 @@ public class JdbcDemo {
 			e.printStackTrace();
 			return 0;
 		}
-		
-		
 	}
+	
+	/**
+	 * Update the salary without using prepared statement
+	 * @param name
+	 */
+	public void updateSalary() {
+		connectToDb("jdbc:mysql://localhost:3306/payrolldb?useSSL=false",
+				"root",
+				"Hrishi123!@#");
+		String query = "UPDATE salary set BasicPay=3000000 where idSalary = (select Salary_idSalary from employee where Employee_name = 'Terisa');";
+		try(Statement statement = connection.createStatement()){
+			statement.executeUpdate(query);
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * @param query
+	 * @return Basic pay of particular employee
+	 */
+	public int getUpdatedSalary(String query) {
+		connectToDb("jdbc:mysql://localhost:3306/payrolldb?useSSL=false",
+				"root",
+				"Hrishi123!@#");
+		try(Statement statement = connection.createStatement()){
+			ResultSet resultset = statement.executeQuery(query);
+			resultset.next();
+			return resultset.getInt(1);
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	
 }
