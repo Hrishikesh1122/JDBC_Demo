@@ -34,6 +34,7 @@ public class JdbcDemo {
 		} catch (SQLException e) {
 			System.out.println("Database Not Found");
 			return false;
+			
 		}
 
 	}
