@@ -62,4 +62,10 @@ public class jdbcDemoTest {
 		int result = jdbc.getUpdatedSalary("select BasicPay from salary where idSalary = (select Salary_idSalary from employee where Employee_name = 'Hrishi');");
 		Assert.assertEquals(99999, result);
 	}
+	
+	@Test
+	public void when_askedToGiveNumberOfMales_ShouldReturn2() {
+		int result = jdbc.getNumberOfMalesOrFemales("M");
+		Assert.assertEquals(2, result);
+	}
 }

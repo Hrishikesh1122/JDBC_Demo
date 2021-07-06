@@ -128,5 +128,23 @@ public class JdbcDemo {
 		}
 	}
 	
+	public int getNumberOfMalesOrFemales(String gender) {
+		connectToDb("jdbc:mysql://localhost:3306/payrolldb?useSSL=false",
+				"root",
+				"Hrishi123!@#");
+		String query = "select count(Gender) from employee where Gender = ?;" ;
+		try(PreparedStatement preparedstatement = connection.prepareStatement(query)) {
+			preparedstatement.setString(1, String.valueOf(gender));
+			ResultSet resultset = preparedstatement.executeQuery(query);
+			resultset.next();
+			System.out.println(resultset.getInt(1));
+			return resultset.getInt(1);
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
 	
 }
