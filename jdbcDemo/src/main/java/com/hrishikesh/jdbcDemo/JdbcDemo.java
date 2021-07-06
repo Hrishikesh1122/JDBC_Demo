@@ -11,9 +11,13 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+
+import model.EmployeeSalaryModel;
 
 
 public class JdbcDemo {
+	ArrayList<EmployeeSalaryModel> salaryList = new ArrayList<>();
 	private Connection connection;
 
 	/**
@@ -36,6 +40,27 @@ public class JdbcDemo {
 			return false;
 			
 		}
-
+	}
+	
+	public int getSalaryFromDb(String query) {
+		connectToDb("jdbc:mysql://localhost:3306/payrolldb?useSSL=false",
+				"root",
+				"Hrishi123!@#");
+		try(Statement statement = connection.createStatement()){
+			ResultSet resultset = statement.executeQuery(query);
+			while(resultset.next()) {
+				EmployeeSalaryModel employee = new EmployeeSalaryModel(resultset.getInt(1),
+						resultset.getString(2),
+						resultset.getInt(3),resultset.getInt(4));
+				salaryList.add(employee);
+			}
+			return salaryList.size();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		}
+		
+		
 	}
 }

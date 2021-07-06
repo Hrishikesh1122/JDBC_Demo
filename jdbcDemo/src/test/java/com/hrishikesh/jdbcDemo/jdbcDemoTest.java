@@ -1,4 +1,6 @@
 package com.hrishikesh.jdbcDemo;
+import java.sql.SQLException;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,5 +33,18 @@ public class jdbcDemoTest {
 		boolean result = jdbc.connectToDb("jdbc:mysql://localhost:1234/payrolldb?useSSL=false","root",
 				"Hrishi123!@#");
 		Assert.assertEquals(false, result);
+	}
+	
+	@Test
+	public void given_ListOfSalaryDetailsOfEmployess_ShouldReturnNumberOfEmployees() throws SQLException {
+		int result = jdbc.getSalaryFromDb("SELECT idEmployee,Employee_name,Salary_idSalary,BasicPay FROM employee"
+				+ " INNER JOIN salary ON employee.Salary_idSalary = salary.idSalary;");
+		Assert.assertEquals(3, result);
+	}
+	
+	@Test
+	public void given_ListOfSalaryDetailsOfEmployess_WhenGivenWrongQuery_ShouldReturnZero() throws SQLException {
+		int result = jdbc.getSalaryFromDb("SELECT * FROM employee");//Wrong Query, throws exception
+		Assert.assertEquals(0, result);
 	}
 }
