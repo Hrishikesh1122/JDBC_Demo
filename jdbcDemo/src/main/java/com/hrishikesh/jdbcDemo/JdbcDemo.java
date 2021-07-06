@@ -8,6 +8,7 @@
 package com.hrishikesh.jdbcDemo;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -76,7 +77,8 @@ public class JdbcDemo {
 		connectToDb("jdbc:mysql://localhost:3306/payrolldb?useSSL=false",
 				"root",
 				"Hrishi123!@#");
-		String query = "UPDATE salary set BasicPay=3000000 where idSalary = (select Salary_idSalary from employee where Employee_name = 'Terisa');";
+		String query = "UPDATE salary set BasicPay=3000000 "
+				+ "where idSalary = (select Salary_idSalary from employee where Employee_name = 'Terisa');";
 		try(Statement statement = connection.createStatement()){
 			statement.executeUpdate(query);
 		}
@@ -86,7 +88,29 @@ public class JdbcDemo {
 	}
 	
 	/**
-	 * @param query
+	 * Update salary using prepared statement
+	 * @param name
+	 * @param salary
+	 */
+	public void updateSalaryUsingPreparedStatement(String name, int salary) {
+		connectToDb("jdbc:mysql://localhost:3306/payrolldb?useSSL=false",
+				"root",
+				"Hrishi123!@#");
+		String query = "UPDATE salary set BasicPay=? "
+				+ "where idSalary = (select Salary_idSalary from employee where Employee_name = ?);";
+		try {
+			PreparedStatement preparedstatement = connection.prepareStatement(query);
+			preparedstatement.setInt(1, salary);
+			preparedstatement.setString(2, name);
+			preparedstatement.executeUpdate();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * @param query from test method
 	 * @return Basic pay of particular employee
 	 */
 	public int getUpdatedSalary(String query) {
