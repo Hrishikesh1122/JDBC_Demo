@@ -20,7 +20,7 @@ import model.EmployeeSalaryModel;
 public class JdbcDemo {
 	ArrayList<EmployeeSalaryModel> salaryList = new ArrayList<>();
 	private Connection connection;
-
+	
 	/**
 	 * This method connects program to database.
 	 * @return true if connection is successful otherwise false
@@ -128,14 +128,18 @@ public class JdbcDemo {
 		}
 	}
 	
+	/**
+	 * @param gender from test method
+	 * @return number of employees of a particular gender.
+	 */
 	public int getNumberOfMalesOrFemales(String gender) {
 		connectToDb("jdbc:mysql://localhost:3306/payrolldb?useSSL=false",
 				"root",
 				"Hrishi123!@#");
-		String query = "select count(Gender) from employee where Gender = ?;" ;
+		String query = "select count(Gender) from employee where Gender = ?" ;
 		try(PreparedStatement preparedstatement = connection.prepareStatement(query)) {
 			preparedstatement.setString(1, String.valueOf(gender));
-			ResultSet resultset = preparedstatement.executeQuery(query);
+			ResultSet resultset = preparedstatement.executeQuery();
 			resultset.next();
 			System.out.println(resultset.getInt(1));
 			return resultset.getInt(1);
@@ -146,5 +150,47 @@ public class JdbcDemo {
 		}
 	}
 	
+	/**
+	 * When new person is added his salary should reflect in List.
+	 * If any exception occurs query is rollbacked.
+	 * @return size of salaryList
+	 * @throws SQLException
+	 */
+	public int addNewEmployee() throws SQLException {
+		connectToDb("jdbc:mysql://localhost:3306/payrolldb?useSSL=false",
+				"root",
+				"Hrishi123!@#");
+		try {
+			connection.setAutoCommit(false);
+			Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			String query = "insert into  employee (Employee_name,Gender,Adress_idAdress,Salary_idSalary)"
+					+ "values('Harshit','M',4,4);";
+			statement.executeUpdate(query);
+			
+			String query2 = "SELECT idEmployee,Employee_name,Salary_idSalary,BasicPay FROM employee"
+					+ " INNER JOIN salary ON employee.Salary_idSalary = salary.idSalary;";
+			ResultSet resultset = statement.executeQuery(query2);
+			resultset.last();
+			
+			EmployeeSalaryModel employee = new EmployeeSalaryModel(resultset.getInt(1),
+					resultset.getString(2),
+					resultset.getInt(3),resultset.getInt(4));
+			salaryList.add(employee);
+			
+		}catch(SQLException e) {
+			connection.rollback();
+			e.printStackTrace();
+			
+		}
+		return salaryList.size();
+		
+	}
 	
+	public void print() {
+		System.out.println(salaryList);
+	}
+	public static void main(String[] args) {
+		JdbcDemo j = new JdbcDemo();
+		j.print();
+	}
 }

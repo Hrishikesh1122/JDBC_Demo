@@ -40,7 +40,7 @@ public class jdbcDemoTest {
 	public void given_ListOfSalaryDetailsOfEmployess_ShouldReturnNumberOfEmployees() throws SQLException {
 		int result = jdbc.getSalaryFromDb("SELECT idEmployee,Employee_name,Salary_idSalary,BasicPay FROM employee"
 				+ " INNER JOIN salary ON employee.Salary_idSalary = salary.idSalary;");
-		Assert.assertEquals(4, result);
+		Assert.assertEquals(5, result);
 	}
 	
 	@Test
@@ -66,6 +66,12 @@ public class jdbcDemoTest {
 	@Test
 	public void when_askedToGiveNumberOfMales_ShouldReturn2() {
 		int result = jdbc.getNumberOfMalesOrFemales("M");
-		Assert.assertEquals(2, result);
+		Assert.assertEquals(3, result);
+	}
+	
+	@Test 
+	public void when_addedEmployeeToDatabase_IfSuccessful_ShouldBeAddedToOurList() throws SQLException {
+		int result = jdbc.addNewEmployee();
+		Assert.assertEquals(5, result);
 	}
 }
