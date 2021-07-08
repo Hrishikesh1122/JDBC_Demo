@@ -180,7 +180,6 @@ public class JdbcDemo {
 		}catch(SQLException e) {
 			connection.rollback();
 			e.printStackTrace();
-			
 		}
 		return salaryList.size();
 		
